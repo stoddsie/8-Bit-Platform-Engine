@@ -5,23 +5,18 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gpg.engine.Engine;
 import com.gpg.engine.Sprites.Willy;
+import com.gpg.engine.Tools.B2WorldCreator;
 
 /**
  * Created by james.stoddern on 29/07/2016.
@@ -36,6 +31,8 @@ public class PlayScreen implements Screen {
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
 
+    private TextureAtlas atlas;
+
     //Box2D
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -49,7 +46,9 @@ public class PlayScreen implements Screen {
      */
     public PlayScreen(Engine game) {
         this.game = game;
-        //texture = new Texture("badlogic.jpg");
+
+        atlas = new TextureAtlas("sprites/willy.pack");
+
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(Engine.V_WIDTH / Engine.PPM, Engine.V_HEIGHT / Engine.PPM, gameCam);
 
@@ -58,42 +57,21 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Engine.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
+
         world = new World(new Vector2(0,-4 ), true);
         b2dr = new Box2DDebugRenderer();
+        new B2WorldCreator(world, map);
 
-        //Box 2d stuff
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
 
-        //Ground Layer
-        for(MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2)  / Engine.PPM, (rect.getY() + rect.getHeight() / 2) / Engine.PPM);
 
-            body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth()/2 / Engine.PPM, rect.getHeight()/2 / Engine.PPM);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-        for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
-
-            body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth()/2, rect.getHeight()/2);
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-        willy = new Willy(world);
+        willy = new Willy(world, this);
 
     }
 
+
+    public TextureAtlas getAtlas() {
+        return atlas;
+    }
 
     /**
      * Handle User Input
@@ -124,6 +102,8 @@ public class PlayScreen implements Screen {
 
         world.step(1/60f, 6, 2);
 
+        willy.update(dt);
+
         gameCam.update();
         renderer.setView(gameCam);
 
@@ -143,12 +123,12 @@ public class PlayScreen implements Screen {
 
         renderer.render();
 
-        b2dr.render(world,gameCam.combined);
+        //b2dr.render(world,gameCam.combined);
 
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
-        //game.batch.draw(texture,0,0);
+        willy.draw(game.batch);
         game.batch.end();
     }
 
@@ -180,6 +160,9 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        world.dispose();
+        map.dispose();
+        renderer.dispose();
+        b2dr.dispose();
     }
 }

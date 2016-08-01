@@ -1,0 +1,19 @@
+
+willy.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+willy_right
+  rotate: false
+  xy: 1, 1
+  size: 80, 32
+  orig: 80, 32
+  offset: 0, 0
+  index: -1
+willy_left
+  rotate: false
+  xy: 81, 1
+  size: 80, 32
+  orig: 80, 32
+  offset: 0, 0
+  index: -1
