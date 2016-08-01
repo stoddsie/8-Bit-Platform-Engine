@@ -67,6 +67,7 @@ public class PlayScreen implements Screen {
         FixtureDef fdef = new FixtureDef();
         Body body;
 
+        //Ground Layer
         for(MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
@@ -99,14 +100,18 @@ public class PlayScreen implements Screen {
      * @param dt
      */
     public void handleInput(float dt) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
             willy.jump();
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && willy.b2body.getLinearVelocity().x <= 2)
-            willy.b2body.applyLinearImpulse(new Vector2(0.05f, 0), willy.b2body.getWorldCenter(), true);
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && willy.b2body.getLinearVelocity().x >= -2)
-            willy.b2body.applyLinearImpulse(new Vector2(-0.05f, 0), willy.b2body.getWorldCenter(), true);
-        //if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-        //    willy.fire();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && willy.b2body.getLinearVelocity().x <= 2) {
+            willy.moveRight();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && willy.b2body.getLinearVelocity().x >= -2) {
+            willy.moveLeft();
+        }
     }
 
 

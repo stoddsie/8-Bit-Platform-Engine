@@ -31,6 +31,7 @@ public class Willy extends Sprite {
         bdef.position.set(150 / Engine.PPM, 80 / Engine.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
 
+
         b2body = world.createBody(bdef);
 
         b2body.setLinearDamping(1);
@@ -39,6 +40,9 @@ public class Willy extends Sprite {
         CircleShape shape = new CircleShape();
         shape.setRadius(8 / Engine.PPM);
 
+        //stop sliding
+        fdef.friction = 100f;
+
         fdef.shape = shape;
         b2body.createFixture(fdef);
 
@@ -46,9 +50,24 @@ public class Willy extends Sprite {
 
     public void jump(){
         //if ( currentState != State.JUMPING ) {
-            b2body.applyLinearImpulse(new Vector2(0, 2f), b2body.getWorldCenter(), true);
+            this.b2body.applyLinearImpulse(new Vector2(0, 2f), this.b2body.getWorldCenter(), true);
             //currentState = State.JUMPING;
+
         //}
+    }
+
+    public void moveRight() {
+        //b2Vec2 vel = this->GetLinearVelocity();
+
+        //this.b2body.applyLinearImpulse(new Vector2(0.05f, 0), this.b2body.getWorldCenter(), true);
+        //this.setPosition(this.getX() * 10.0f, this.getY());
+        this.b2body.setLinearVelocity(1,0);
+    }
+
+    public void moveLeft() {
+        //this.b2body.applyLinearImpulse(new Vector2(-0.05f, 0), this.b2body.getWorldCenter(), true);
+        //this.setPosition(this.getX() - 10.0f, this.getY());
+        this.b2body.setLinearVelocity(-1,0);
     }
 
 }
