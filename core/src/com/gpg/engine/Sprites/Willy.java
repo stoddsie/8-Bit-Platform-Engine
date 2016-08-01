@@ -68,7 +68,8 @@ public class Willy extends Sprite {
 
 
     public void update(float dt) {
-        setPosition(b2body.getPosition().x - getWidth() /2, b2body.getPosition().y - getHeight() / 2);
+
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
     }
 
@@ -81,7 +82,7 @@ public class Willy extends Sprite {
         bdef.position.set(150 / Engine.PPM, 80 / Engine.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
-        b2body.setLinearDamping(1);
+        //b2body.setLinearDamping(2);
 
         FixtureDef fdef = new FixtureDef();
         //CircleShape shape = new CircleShape();
@@ -92,8 +93,10 @@ public class Willy extends Sprite {
 
         shape.setAsBox(9 / Engine.PPM, 14 / Engine.PPM);
 
+        //fdef.density = 1;
+        //fdef.restitution = 0.6f;
         //stop sliding
-        fdef.friction = 100f;
+        fdef.friction = 2.5f;
         fdef.shape = shape;
         b2body.createFixture(fdef);
 
@@ -108,11 +111,9 @@ public class Willy extends Sprite {
 
         //depending on the state, get corresponding animation keyFrame.
         switch(currentState){
-            //case DEAD:
-                //region = willyDead;
-            //    break;
             case JUMPING:
-                region = willyJump;
+                //region = willyJump;
+                region = willyWalk.getKeyFrame(stateTimer, true);
                 break;
             case WALKING:
                 region = willyWalk.getKeyFrame(stateTimer, true);
@@ -160,14 +161,17 @@ public class Willy extends Sprite {
         else if((b2body.getLinearVelocity().y > 0 && currentState == State.JUMPING) || (b2body.getLinearVelocity().y < 0 && previousState == State.JUMPING))
             return State.JUMPING;
             //if negative in Y-Axis mario is falling
-        else if(b2body.getLinearVelocity().y < 0)
+        else if(b2body.getLinearVelocity().y < 0) {
+            b2body.setLinearVelocity(0, b2body.getLinearVelocity().y);
             return State.FALLING;
             //if mario is positive or negative in the X axis he is running
-        else if(b2body.getLinearVelocity().x != 0)
+        } else if(b2body.getLinearVelocity().x != 0)
             return State.WALKING;
             //if none of these return then he must be standing
-        else
+        else {
+            b2body.setLinearVelocity(0,0);
             return State.STANDING;
+        }
     }
 
 
@@ -176,11 +180,12 @@ public class Willy extends Sprite {
      * Jump
      */
     public void jump(){
-        //if ( currentState != State.JUMPING ) {
-            this.b2body.applyLinearImpulse(new Vector2(0, 3f), this.b2body.getWorldCenter(), true);
-            currentState = State.JUMPING;
+        if ( currentState != State.JUMPING ) {
 
-        //}
+            this.b2body.setLinearVelocity(b2body.getLinearVelocity().x, 2f);
+            //this.b2body.applyLinearImpulse(new Vector2(0, 2.5f), this.b2body.getWorldCenter(), true);
+            currentState = State.JUMPING;
+        }
     }
 
 
@@ -188,10 +193,10 @@ public class Willy extends Sprite {
      * Left
      */
     public void moveLeft() {
-        //this.b2body.applyLinearImpulse(new Vector2(-0.05f, 0), this.b2body.getWorldCenter(), true);
-        //this.setPosition(this.getX() - 10.0f, this.getY());
+        //this.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), this.b2body.getWorldCenter(), true);
+        //this.setPosition(this - 10.0f / Engine.PPM, this.getY());
         //if ( currentState != State.JUMPING ) {
-            this.b2body.setLinearVelocity(-1, 0);
+            this.b2body.setLinearVelocity(-0.7f, b2body.getLinearVelocity().y);
         //}
     }
 
@@ -202,11 +207,12 @@ public class Willy extends Sprite {
     public void moveRight() {
         //b2Vec2 vel = this->GetLinearVelocity();
 
-        //this.b2body.applyLinearImpulse(new Vector2(0.05f, 0), this.b2body.getWorldCenter(), true);
-        //this.setPosition(this.getX() * 10.0f, this.getY());
+        //this.b2body.applyLinearImpulse(new Vector2(0.1f, 0), this.b2body.getWorldCenter(), true);
+        //setPosition(this.getX() * 5.0f, this.getY());
         //if ( currentState != State.JUMPING ) {
-            this.b2body.setLinearVelocity(1, 0);
+            //this.b2body.setLinearVelocity(1, 0);
         //}
+        this.b2body.setLinearVelocity(0.7f, b2body.getLinearVelocity().y);
     }
 
 

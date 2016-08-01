@@ -53,7 +53,7 @@ public class PlayScreen implements Screen {
         gamePort = new FitViewport(Engine.V_WIDTH / Engine.PPM, Engine.V_HEIGHT / Engine.PPM, gameCam);
 
         maploader = new TmxMapLoader();
-        map = maploader.load("tilemaps/level1.tmx");
+        map = maploader.load("tilemaps/level2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Engine.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
@@ -83,13 +83,14 @@ public class PlayScreen implements Screen {
             willy.jump();
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && willy.b2body.getLinearVelocity().x <= 2) {
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && willy.b2body.getLinearVelocity().x <= 2 && willy.getState()!= Willy.State.JUMPING) {
             willy.moveRight();
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && willy.b2body.getLinearVelocity().x >= -2) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && willy.b2body.getLinearVelocity().x >= -2 && willy.getState()!= Willy.State.JUMPING) {
             willy.moveLeft();
         }
+
     }
 
 
