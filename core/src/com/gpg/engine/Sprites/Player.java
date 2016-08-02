@@ -18,7 +18,7 @@ import com.gpg.engine.Screens.PlayScreen;
 /**
  * Created by james.stoddern on 29/07/2016.
  */
-public class Willy extends Sprite {
+public class Player extends Sprite {
     public World world;
     public Body b2body;
 
@@ -36,7 +36,7 @@ public class Willy extends Sprite {
 
     private boolean willyIsDead;
 
-    public Willy(World world, PlayScreen screen) {
+    public Player(World world, PlayScreen screen) {
         super(screen.getAtlas().findRegion("willy_right"));
 
         this.world = world;

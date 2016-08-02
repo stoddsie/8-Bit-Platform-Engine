@@ -15,8 +15,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.gpg.engine.Engine;
-import com.gpg.engine.Sprites.Willy;
+import com.gpg.engine.Sprites.Player;
 import com.gpg.engine.Tools.B2WorldCreator;
+import com.gpg.engine.Tools.WorldContactListener;
 
 /**
  * Created by james.stoddern on 29/07/2016.
@@ -37,8 +38,8 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer b2dr;
 
-    private Willy willy;
-
+    private Player player;
+    private boolean bDebug = true;
 
     /**
      * Constructor
@@ -46,14 +47,14 @@ public class PlayScreen implements Screen {
      */
     public PlayScreen(Engine game) {
         this.game = game;
-
         atlas = new TextureAtlas("sprites/willy.pack");
 
         gameCam = new OrthographicCamera();
         gamePort = new FitViewport(Engine.V_WIDTH / Engine.PPM, Engine.V_HEIGHT / Engine.PPM, gameCam);
 
+
         maploader = new TmxMapLoader();
-        map = maploader.load("tilemaps/level2.tmx");
+        map = maploader.load("tilemaps/level1.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / Engine.PPM);
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
@@ -61,10 +62,9 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0,-4 ), true);
         b2dr = new Box2DDebugRenderer();
         new B2WorldCreator(world, map);
+        world.setContactListener(new WorldContactListener());
 
-
-
-        willy = new Willy(world, this);
+        player = new Player(world, this);
 
     }
 
@@ -79,16 +79,19 @@ public class PlayScreen implements Screen {
      */
     public void handleInput(float dt) {
 
+        //jump
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            willy.jump();
+            player.jump();
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && willy.b2body.getLinearVelocity().x <= 2 && willy.getState()!= Willy.State.JUMPING) {
-            willy.moveRight();
+        //left
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.b2body.getLinearVelocity().x >= -2 && player.getState()!= Player.State.JUMPING) {
+            player.moveLeft();
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && willy.b2body.getLinearVelocity().x >= -2 && willy.getState()!= Willy.State.JUMPING) {
-            willy.moveLeft();
+        //right
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.b2body.getLinearVelocity().x <= 2 && player.getState()!= Player.State.JUMPING) {
+            player.moveRight();
         }
 
     }
@@ -103,7 +106,7 @@ public class PlayScreen implements Screen {
 
         world.step(1/60f, 6, 2);
 
-        willy.update(dt);
+        player.update(dt);
 
         gameCam.update();
         renderer.setView(gameCam);
@@ -124,12 +127,14 @@ public class PlayScreen implements Screen {
 
         renderer.render();
 
-        //b2dr.render(world,gameCam.combined);
+        if(this.bDebug) {
+            b2dr.render(world, gameCam.combined);
+        }
 
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.begin();
-        willy.draw(game.batch);
+        player.draw(game.batch);
         game.batch.end();
     }
 
@@ -142,6 +147,14 @@ public class PlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+    }
+
+    public TiledMap getMap(){
+        return map;
+    }
+
+    public World getWorld(){
+        return world;
     }
 
     @Override
