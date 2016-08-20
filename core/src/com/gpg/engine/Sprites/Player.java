@@ -92,13 +92,18 @@ public class Player extends Sprite {
 
 
         shape.setAsBox(9 / Engine.PPM, 14 / Engine.PPM);
+        fdef.filter.categoryBits = Engine.PLAYER_BIT;
+        fdef.filter.maskBits = Engine.GROUND_BIT | Engine.PLATFORM_BIT;
+
 
         //fdef.density = 1;
         //fdef.restitution = 0.6f;
         //stop sliding
         fdef.friction = 2.5f;
         fdef.shape = shape;
-        b2body.createFixture(fdef);
+        b2body.createFixture(fdef).setUserData("player");
+
+        //b2body.createFixture(fdef);
 
     }
 

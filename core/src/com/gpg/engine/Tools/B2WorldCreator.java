@@ -1,5 +1,6 @@
 package com.gpg.engine.Tools;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -23,7 +24,10 @@ public class B2WorldCreator {
         FixtureDef fdef = new FixtureDef();
         Body body;
 
-        //Ground Layer
+        //NOTE:Layers are 0 based - 0 = background-graphics.
+
+        //////////////////////////////////////////////////////////////////////////
+        //Ground and Walls Layer
         for(MapObject object : map.getLayers().get(1).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
@@ -32,17 +36,27 @@ public class B2WorldCreator {
             body = world.createBody(bdef);
             shape.setAsBox(rect.getWidth()/2 / Engine.PPM, rect.getHeight()/2 / Engine.PPM);
             fdef.shape = shape;
+            fdef.filter.categoryBits = Engine.GROUND_BIT;
+
             body.createFixture(fdef);
         }
 
+        Gdx.app.log("Init","Ground Layer Init");
+
+        //////////////////////////////////////////////////////////////////////////
+        //Platform Layers - with category bit PLATFORM_BIT
         for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
+            bdef.position.set((rect.getX() + rect.getWidth() / 2)  / Engine.PPM, (rect.getY() + rect.getHeight() / 2) / Engine.PPM);
 
             body = world.createBody(bdef);
-            shape.setAsBox(rect.getWidth()/2, rect.getHeight()/2);
+            shape.setAsBox(rect.getWidth()/2 / Engine.PPM, rect.getHeight()/2 / Engine.PPM);
             fdef.shape = shape;
+
+            //Set the category Bits to Platform
+            fdef.filter.categoryBits = Engine.PLATFORM_BIT;
+
             body.createFixture(fdef);
         }
     }

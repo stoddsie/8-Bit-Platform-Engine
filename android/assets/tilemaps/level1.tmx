@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="17" tilewidth="16" tileheight="16" nextobjectid="35">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="17" tilewidth="16" tileheight="16" nextobjectid="45">
  <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16" tilecount="544">
   <image source="tiles.png" width="512" height="272"/>
  </tileset>
@@ -18,7 +18,7 @@
 1,0,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,1,
 1,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,10,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,1,
-1,10,10,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,1,
+1,10,10,10,10,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,0,0,0,0,0,0,0,0,0,0,12,1,
 1,10,10,10,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -33,15 +33,18 @@
   <object id="8" x="64" y="208" width="16" height="48"/>
   <object id="9" x="80" y="224" width="16" height="32"/>
   <object id="16" x="0" y="16" width="16" height="240"/>
-  <object id="19" x="16" y="80" width="16" height="16"/>
   <object id="20" x="0" y="256" width="496" height="16"/>
-  <object id="27" x="416" y="64" width="80" height="16"/>
-  <object id="28" x="480" y="112" width="16" height="16"/>
-  <object id="29" x="464" y="192" width="32" height="16"/>
-  <object id="30" x="112" y="144" width="304" height="16"/>
-  <object id="31" x="320" y="96" width="48" height="16"/>
-  <object id="33" x="128" y="96" width="32" height="16"/>
-  <object id="34" x="16" y="96" width="64" height="16"/>
+  <object id="43" x="16" y="80" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup name="platform">
+  <object id="35" x="112" y="144" width="304" height="16"/>
+  <object id="36" x="464" y="192" width="32" height="16"/>
+  <object id="37" x="480" y="112" width="16" height="16"/>
+  <object id="38" x="320" y="96" width="48" height="16"/>
+  <object id="39" x="416" y="64" width="80" height="16"/>
+  <object id="40" x="128" y="96" width="32" height="16"/>
+  <object id="41" x="16" y="96" width="64" height="16"/>
+  <object id="44" x="240" y="208" width="80" height="16"/>
  </objectgroup>
  <objectgroup name="deathsquares">
   <object id="21" x="16" y="16" width="16" height="16"/>
